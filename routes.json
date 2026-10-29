@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "description": "Glitter Learning Academy user template routes",
+  "routes": [
+    {"path": "/", "layout": "home", "auth_required": false, "meta": {"title": "$t:glitter-learning-academy.home.title"}},
+    {"path": "/login", "layout": "auth/login", "auth_required": false, "guest_only": true, "meta": {"title": "$t:glitter-learning-academy.auth.login"}},
+    {"path": "/register", "layout": "auth/register", "auth_required": false, "guest_only": true, "meta": {"title": "$t:glitter-learning-academy.auth.register"}},
+    {"path": "/forgot-password", "layout": "auth/forgot_password", "auth_required": false, "guest_only": true, "meta": {"title": "$t:glitter-learning-academy.auth.forgot_title"}},
+    {"path": "/reset-password", "layout": "auth/reset_password", "auth_required": false, "guest_only": true, "meta": {"title": "$t:glitter-learning-academy.auth.reset_title"}},
+    {"path": "/mypage/profile", "layout": "mypage/profile", "auth_required": true, "meta": {"title": "$t:glitter-learning-academy.profile.title"}},
+    {"path": "/search", "layout": "search/index", "auth_required": false, "meta": {"title": "$t:glitter-learning-academy.search.title"}},
+    {"path": "/learning", "layout": "learning/course_list", "auth_required": false, "meta": {"title": "$t:glitter-learning-academy.courses.title"}},
+    {"path": "/learning/courses/:course", "layout": "learning/course_detail", "auth_required": false, "meta": {"title": "$t:glitter-learning-academy.courses.overview"}},
+    {"path": "/learning/courses/:course/lessons/:lesson", "layout": "learning/lesson", "auth_required": true, "meta": {"title": "$t:glitter-learning-academy.lesson.title"}},
+    {"path": "/learning/me", "layout": "learning/my_learning", "auth_required": true, "meta": {"title": "$t:glitter-learning-academy.learning.title"}},
+    {"path": "/learning/completions", "layout": "learning/completions", "auth_required": true, "meta": {"title": "$t:glitter-learning-academy.completions.title"}},
+    {"path": "/boards", "layout": "community/boards", "auth_required": false, "meta": {"title": "$t:glitter-learning-academy.community.title"}},
+    {"path": "/board/:slug", "layout": "community/board", "auth_required": false, "meta": {"title": "$t:glitter-learning-academy.community.board_title"}},
+    {"path": "/board/:slug/:id", "layout": "community/post", "auth_required": false, "meta": {"title": "$t:glitter-learning-academy.community.post_title"}},
+    {"path": "/page/:slug", "layout": "pages/show", "auth_required": false, "meta": {"title": "$t:glitter-learning-academy.pages.title"}},
+    {"path": "/401", "layout": "errors/401", "auth_required": false},
+    {"path": "/403", "layout": "errors/403", "auth_required": false},
+    {"path": "/404", "layout": "errors/404", "auth_required": false},
+    {"path": "/500", "layout": "errors/500", "auth_required": false},
+    {"path": "/503", "layout": "errors/503", "auth_required": false}
+  ]
+}

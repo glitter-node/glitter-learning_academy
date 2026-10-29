@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Glitter Learning Academy</title>
+  <desc id="desc">An open book, rising learning path, and a four-point sparkle on a midnight-blue rounded square.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#142D57"/>
+      <stop offset="1" stop-color="#071A35"/>
+    </linearGradient>
+    <linearGradient id="pages" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#D8EAFB"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF"/>
+      <stop offset="1" stop-color="#7DD3FC"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#background)"/>
+  <rect x="19" y="19" width="474" height="474" rx="96" fill="none" stroke="#FFFFFF" stroke-opacity=".09" stroke-width="2"/>
+  <!-- Four-point glitter mark -->
+  <path d="M372 80 C381 111 389 119 420 128 C389 137 381 145 372 176 C363 145 355 137 324 128 C355 119 363 111 372 80Z" fill="#FDE68A"/>
+  <circle cx="427" cy="190" r="7" fill="#7DD3FC"/>
+  <circle cx="314" cy="89" r="5" fill="#2DD4BF"/>
+  <!-- Book shadow -->
+  <path d="M88 351 Q166 325 256 374 Q346 325 424 351 L424 384 Q343 364 256 410 Q169 364 88 384Z" fill="#041226" opacity=".45"/>
+  <!-- Open book: left and right leaves -->
+  <path d="M88 207 Q170 178 246 220 L246 372 Q168 330 88 355Z" fill="url(#pages)"/>
+  <path d="M266 220 Q342 178 424 207 L424 355 Q344 330 266 372Z" fill="url(#pages)"/>
+  <path d="M256 225 L256 384" stroke="#7DD3FC" stroke-width="11" stroke-linecap="round"/>
+  <path d="M110 236 Q172 218 226 248 M110 271 Q170 254 226 281 M110 306 Q172 289 226 317" fill="none" stroke="#A9C5DF" stroke-width="9" stroke-linecap="round" opacity=".85"/>
+  <path d="M286 248 Q340 218 402 236 M286 281 Q342 254 402 271 M286 317 Q340 289 402 306" fill="none" stroke="#A9C5DF" stroke-width="9" stroke-linecap="round" opacity=".85"/>
+  <!-- Learning ascent: three milestones -->
+  <path d="M145 182 L204 146 L260 166 L317 112" fill="none" stroke="url(#accent)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="145" cy="182" r="12" fill="#2DD4BF"/>
+  <circle cx="204" cy="146" r="12" fill="#5EEAD4"/>
+  <circle cx="260" cy="166" r="12" fill="#7DD3FC"/>
+  <path d="M299 113 L317 112 L316 130" fill="none" stroke="#7DD3FC" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

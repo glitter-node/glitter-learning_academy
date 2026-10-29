@@ -1,0 +1,28 @@
+<layout name="community/board" version="1.0.0" extends="_user_base">
+  <meta title="{{posts?.data?.board?.name ?? '$t:glitter-learning-academy.community.board_title'}}" description="{{posts?.data?.board?.description ?? ''}}"/>
+  <data-source id="posts" type="api" endpoint="/api/modules/sirsoft-board/boards/{{route.slug}}/posts" method="GET" :auto_fetch="true" auth_mode="optional" loading_strategy="progressive">
+    <params page="{{query.page ?? 1}}" search="{{query.search ?? ''}}" search_field="title_content"/>
+    <success><set-state target="local" :loadFailed="false"/></success>
+    <fail><set-state target="local" :loadFailed="true"/></fail>
+    <fallback><field name="data"><field name="data" :value="[]"/><field name="board" :value="null"/><field name="abilities" :value="[]"/><field name="pagination" :value="[]"/></field></fallback>
+  </data-source>
+  <init-local><field name="loadFailed" :value="false"/><field name="search" value=""/></init-local>
+  <init><set-state target="local" search="{{query.search || ''}}"/></init>
+  <slot name="content">
+    <main class="glitter-learning-academy-section"><div class="glitter-learning-academy-container">
+      <a href="/boards" class="glitter-learning-academy-back-link">$t:glitter-learning-academy.community.back_to_boards</a>
+      <div data-if="{{posts?.data?.board}}" class="glitter-learning-academy-page-head"><h1>{{posts.data.board.name}}</h1><p class="glitter-learning-academy-muted">{{posts.data.board.description ?? $t('glitter-learning-academy.community.no_description')}}</p><div class="glitter-learning-academy-status-row"><span data-if="{{posts?.data?.abilities?.can_write}}" class="glitter-learning-academy-badge glitter-learning-academy-badge--success">$t:glitter-learning-academy.community.can_write</span><span data-if="{{!posts?.data?.abilities?.can_write}}" class="glitter-learning-academy-badge">$t:glitter-learning-academy.community.read_only</span></div></div>
+      <form data-if="{{posts?.data?.board}}" class="glitter-learning-academy-search-bar">
+        <on type="submit"><navigate path="/board/{{route.slug}}" :mergeQuery="true"><query :page="1" search="{{_local.search || undefined}}"/></navigate></on>
+        <label for="academy-board-search" class="glitter-learning-academy-sr-only">$t:glitter-learning-academy.community.search_label</label><input id="academy-board-search" class="glitter-learning-academy-input" value="{{_local.search}}" placeholder="$t:glitter-learning-academy.community.search_placeholder"><on type="input"><set-state target="local" search="{{$event.target.value}}"/></on></input><button type="submit" class="glitter-learning-academy-button">$t:glitter-learning-academy.community.search</button>
+      </form>
+      <p data-if="{{posts === undefined &amp;&amp; !_local.loadFailed}}">$t:glitter-learning-academy.common.loading</p>
+      <div data-if="{{_local.loadFailed}}" class="glitter-learning-academy-empty"><h2>$t:glitter-learning-academy.community.board_unavailable</h2><p>$t:glitter-learning-academy.community.board_unavailable_description</p></div>
+      <ul data-if="{{!_local.loadFailed &amp;&amp; (posts?.data?.data ?? []).length > 0}}" class="glitter-learning-academy-list">
+        <li data-each="post in {{posts?.data?.data ?? []}}" class="glitter-learning-academy-list-item"><div class="glitter-learning-academy-list-main"><div class="glitter-learning-academy-status-row"><span data-if="{{post.is_notice}}" class="glitter-learning-academy-badge">$t:glitter-learning-academy.community.notice</span><span data-if="{{post.category}}" class="glitter-learning-academy-badge">{{post.category}}</span></div><h2><a href="/board/{{route.slug}}/{{post.id}}">{{post.title}}</a></h2><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.community.post_meta|author={{post.author?.name}}|date={{post.created_at_formatted ?? post.created_at}}</p><p data-if="{{post.content_preview}}">{{post.content_preview}}</p></div><span>$t:glitter-learning-academy.community.comments_count|count={{post.comment_count ?? 0}}</span></li>
+      </ul>
+      <div data-if="{{!_local.loadFailed &amp;&amp; posts !== undefined &amp;&amp; (posts?.data?.data ?? []).length === 0}}" class="glitter-learning-academy-empty"><h2>$t:glitter-learning-academy.community.empty_posts</h2><p>$t:glitter-learning-academy.community.empty_posts_description</p></div>
+      <nav data-if="{{posts?.data?.pagination}}" class="glitter-learning-academy-pagination" aria-label="$t:glitter-learning-academy.community.pagination"><a data-if="{{(posts.data.pagination.current_page ?? 1) > 1}}" class="glitter-learning-academy-button glitter-learning-academy-button--secondary" href="/board/{{route.slug}}?page={{(posts.data.pagination.current_page ?? 1) - 1}}&amp;search={{query.search ?? ''}}">$t:glitter-learning-academy.common.previous</a><a data-if="{{posts.data.pagination.has_more_pages}}" class="glitter-learning-academy-button glitter-learning-academy-button--secondary" href="/board/{{route.slug}}?page={{(posts.data.pagination.current_page ?? 1) + 1}}&amp;search={{query.search ?? ''}}">$t:glitter-learning-academy.common.next</a></nav>
+    </div></main>
+  </slot>
+</layout>

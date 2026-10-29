@@ -1,0 +1,85 @@
+<layout name="_user_base" version="1.0.0">
+  <meta title="$t:glitter-learning-academy.brand" :is_base="true"/>
+  <init>
+    <conditions>
+      <when if="{{!$templateLocales.includes($locale)}}"><set-locale target="{{$templateLocales[0]}}"/></when>
+    </conditions>
+    <set-state target="global" :academyMenuOpen="false"/>
+  </init>
+  <data-source id="current_user" type="api" endpoint="/api/auth/user" method="GET" :auto_fetch="true" :auth_required="true" loading_strategy="progressive" initGlobal="currentUser">
+    <fallback><field name="data" :value="[]"/></fallback>
+    <error-handling><on-code code="401"><suppress/></on-code></error-handling>
+  </data-source>
+  <toast data-type="composite" data-ref="global_toast" toasts="{{_global.toasts}}"/>
+  <div class="glitter-learning-academy-shell">
+    <header class="glitter-learning-academy-header">
+      <div class="glitter-learning-academy-container">
+        <div class="glitter-learning-academy-header-row">
+          <a href="/" class="glitter-learning-academy-brand">$t:glitter-learning-academy.brand</a>
+          <nav class="glitter-learning-academy-desktop-nav" aria-label="$t:glitter-learning-academy.nav.menu">
+            <a href="/" class="glitter-learning-academy-nav-link {{route.path === '/' ? 'glitter-learning-academy-nav-link--active' : ''}}" aria-current="{{route.path === '/' ? 'page' : null}}">$t:glitter-learning-academy.nav.home</a>
+            <a href="/learning" class="glitter-learning-academy-nav-link {{route.path === '/learning' || route.path.startsWith('/learning/') ? 'glitter-learning-academy-nav-link--active' : ''}}" aria-current="{{route.path === '/learning' || route.path.startsWith('/learning/') ? 'page' : null}}">$t:glitter-learning-academy.nav.courses</a>
+            <a href="/boards" class="glitter-learning-academy-nav-link {{route.path === '/boards' || route.path.startsWith('/board/') ? 'glitter-learning-academy-nav-link--active' : ''}}" aria-current="{{route.path === '/boards' || route.path.startsWith('/board/') ? 'page' : null}}">$t:glitter-learning-academy.nav.community</a>
+            <a href="/search" class="glitter-learning-academy-nav-link {{route.path === '/search' ? 'glitter-learning-academy-nav-link--active' : ''}}" aria-current="{{route.path === '/search' ? 'page' : null}}">$t:glitter-learning-academy.nav.search</a>
+          </nav>
+          <div class="glitter-learning-academy-header-utilities">
+            <select class="glitter-learning-academy-select glitter-learning-academy-language-select" aria-label="$t:glitter-learning-academy.nav.language" value="{{$templateLocales.includes($locale) ? $locale : $templateLocales[0]}}">
+              <on type="change"><set-locale target="{{$event.target.value}}"/></on>
+              <option data-each="loc in {{$templateLocales}}" value="{{loc}}">{{loc.toUpperCase()}}</option>
+            </select>
+            <theme-toggle data-type="composite" label="$t:glitter-learning-academy.nav.theme"/>
+            <account-menu data-type="composite" user="{{_global.currentUser}}" accountLabel="$t:glitter-learning-academy.nav.account" memberLabel="$t:glitter-learning-academy.nav.member" adminLabel="$t:glitter-learning-academy.nav.admin" profileLabel="$t:glitter-learning-academy.nav.profile" adminMenuLabel="$t:glitter-learning-academy.nav.admin_menu" logoutLabel="$t:glitter-learning-academy.nav.logout" loginLabel="$t:glitter-learning-academy.nav.login"/>
+            <a data-if="{{!_global.currentUser?.uuid}}" href="/register" class="glitter-learning-academy-account-login glitter-learning-academy-register-link glitter-learning-academy-button glitter-learning-academy-button--secondary">$t:glitter-learning-academy.nav.register</a>
+            <button type="button" class="glitter-learning-academy-button glitter-learning-academy-button--secondary glitter-learning-academy-mobile-toggle" aria-expanded="{{_global.academyMenuOpen}}" aria-controls="glitter-learning-academy-mobile-menu" aria-label="{{_global.academyMenuOpen ? $t('glitter-learning-academy.nav.close') : $t('glitter-learning-academy.nav.menu')}}">
+              <on type="click"><set-state target="global" academyMenuOpen="{{!_global.academyMenuOpen}}"/></on>
+              <span aria-hidden="true">{{_global.academyMenuOpen ? '×' : '☰'}}</span>
+              <span class="glitter-learning-academy-sr-only">{{_global.academyMenuOpen ? $t('glitter-learning-academy.nav.close') : $t('glitter-learning-academy.nav.menu')}}</span>
+            </button>
+          </div>
+        </div>
+        <nav id="glitter-learning-academy-mobile-menu" data-if="{{_global.academyMenuOpen}}" class="glitter-learning-academy-mobile-nav" aria-label="$t:glitter-learning-academy.nav.menu">
+          <on type="keydown" key="Escape"><set-state target="global" :academyMenuOpen="false"/></on>
+          <a href="/" class="glitter-learning-academy-nav-link {{route.path === '/' ? 'glitter-learning-academy-nav-link--active' : ''}}" aria-current="{{route.path === '/' ? 'page' : null}}">$t:glitter-learning-academy.nav.home</a>
+          <a href="/learning" class="glitter-learning-academy-nav-link {{route.path === '/learning' || route.path.startsWith('/learning/') ? 'glitter-learning-academy-nav-link--active' : ''}}" aria-current="{{route.path === '/learning' || route.path.startsWith('/learning/') ? 'page' : null}}">$t:glitter-learning-academy.nav.courses</a>
+          <a href="/boards" class="glitter-learning-academy-nav-link {{route.path === '/boards' || route.path.startsWith('/board/') ? 'glitter-learning-academy-nav-link--active' : ''}}" aria-current="{{route.path === '/boards' || route.path.startsWith('/board/') ? 'page' : null}}">$t:glitter-learning-academy.nav.community</a>
+          <a data-if="{{_global.currentUser?.uuid}}" href="/learning/me">$t:glitter-learning-academy.nav.my_learning</a>
+          <a data-if="{{_global.currentUser?.uuid}}" href="/learning/completions">$t:glitter-learning-academy.nav.completions</a>
+          <a href="/search" class="glitter-learning-academy-nav-link {{route.path === '/search' ? 'glitter-learning-academy-nav-link--active' : ''}}" aria-current="{{route.path === '/search' ? 'page' : null}}">$t:glitter-learning-academy.nav.search</a>
+          <a data-if="{{!_global.currentUser?.uuid}}" href="/register" class="glitter-learning-academy-register-link">$t:glitter-learning-academy.nav.register</a>
+          <select class="glitter-learning-academy-select glitter-learning-academy-mobile-language-select" aria-label="$t:glitter-learning-academy.nav.language" value="{{$templateLocales.includes($locale) ? $locale : $templateLocales[0]}}">
+            <on type="change"><set-locale target="{{$event.target.value}}"/></on>
+            <option data-each="loc in {{$templateLocales}}" value="{{loc}}">{{loc.toUpperCase()}}</option>
+          </select>
+        </nav>
+      </div>
+    </header>
+    <main data-slot="content" class="glitter-learning-academy-main"/>
+    <footer class="glitter-learning-academy-footer">
+      <div class="glitter-learning-academy-container">
+        <div class="glitter-learning-academy-footer-grid">
+          <div class="glitter-learning-academy-footer-brand">
+            <strong class="glitter-learning-academy-footer-brand-title">$t:glitter-learning-academy.brand</strong>
+            <p class="glitter-learning-academy-footer-tagline">$t:glitter-learning-academy.footer.tagline</p>
+            <p class="glitter-learning-academy-footer-description">$t:glitter-learning-academy.footer.description</p>
+          </div>
+          <nav class="glitter-learning-academy-footer-nav" aria-label="$t:glitter-learning-academy.footer.learning">
+            <h2>$t:glitter-learning-academy.footer.learning</h2>
+            <a href="/learning">$t:glitter-learning-academy.footer.browse_courses</a>
+            <a data-if="{{_global.currentUser?.uuid}}" href="/learning/me">$t:glitter-learning-academy.nav.my_learning</a>
+            <a data-if="{{_global.currentUser?.uuid}}" href="/learning/completions">$t:glitter-learning-academy.nav.completions</a>
+          </nav>
+          <nav class="glitter-learning-academy-footer-nav" aria-label="$t:glitter-learning-academy.footer.community">
+            <h2>$t:glitter-learning-academy.footer.community</h2>
+            <a href="/boards">$t:glitter-learning-academy.footer.all_boards</a>
+            <a href="/board/notice">$t:glitter-learning-academy.footer.notice</a>
+            <a href="/board/qna">$t:glitter-learning-academy.footer.qna</a>
+          </nav>
+        </div>
+        <div class="glitter-learning-academy-footer-bottom">
+          <span>$t:glitter-learning-academy.footer.copyright</span>
+          <span>$t:glitter-learning-academy.brand</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</layout>

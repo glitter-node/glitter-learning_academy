@@ -1,0 +1,16 @@
+<layout name="mypage/profile" version="1.0.0" extends="_user_base">
+  <meta title="$t:glitter-learning-academy.profile.title" :auth_required="true"/>
+  <data-source id="profile" type="api" endpoint="/api/me" method="GET" :auto_fetch="true" :auth_required="true" loading_strategy="progressive">
+    <success><set-state target="local" :loadFailed="false" :profileErrorStatus="null"/></success>
+    <fail><set-state target="local" :loadFailed="true" profileErrorStatus="{{error.status ?? 0}}"/></fail>
+    <fallback><field name="data" :value="null"/></fallback>
+  </data-source>
+  <init-local><field name="loadFailed" :value="false"/><field name="profileErrorStatus" :value="null"/></init-local>
+  <slot name="content"><section class="glitter-learning-academy-section"><div class="glitter-learning-academy-container"><div class="glitter-learning-academy-section-head"><div><h1>$t:glitter-learning-academy.profile.title</h1><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.profile.description</p></div></div>
+    <p data-if="{{profile === undefined &amp;&amp; !_local.loadFailed}}">$t:glitter-learning-academy.profile.loading</p>
+    <div data-if="{{_local.loadFailed &amp;&amp; _local.profileErrorStatus === 401}}" class="glitter-learning-academy-empty"><p>$t:glitter-learning-academy.profile.unauthorized</p><a href="/login?redirect=/mypage/profile" class="glitter-learning-academy-button">$t:glitter-learning-academy.profile.go_to_login</a></div>
+    <div data-if="{{_local.loadFailed &amp;&amp; _local.profileErrorStatus !== 401}}" class="glitter-learning-academy-empty"><p>$t:glitter-learning-academy.profile.load_failed</p><button type="button" class="glitter-learning-academy-button glitter-learning-academy-button--secondary"><on type="click"><set-state target="local" :loadFailed="false" :profileErrorStatus="null"/><refetch-data-source dataSourceId="profile"/></on>$t:glitter-learning-academy.profile.retry</button></div>
+    <div data-if="{{profile !== undefined &amp;&amp; !_local.loadFailed &amp;&amp; !profile?.data}}" class="glitter-learning-academy-empty"><p>$t:glitter-learning-academy.profile.empty</p></div>
+    <div data-if="{{profile?.data}}" class="glitter-learning-academy-panel glitter-learning-academy-stack"><div><strong>$t:glitter-learning-academy.profile.name</strong><p>{{profile.data.name ?? $t('glitter-learning-academy.profile.unavailable')}}</p></div><div><strong>$t:glitter-learning-academy.profile.nickname</strong><p>{{profile.data.nickname ?? $t('glitter-learning-academy.profile.unavailable')}}</p></div><div><strong>$t:glitter-learning-academy.profile.email</strong><p>{{profile.data.email ?? $t('glitter-learning-academy.profile.unavailable')}}</p></div><div><strong>$t:glitter-learning-academy.profile.joined_at</strong><p>{{profile.data.created_at ?? $t('glitter-learning-academy.profile.unavailable')}}</p></div></div>
+  </div></section></slot>
+</layout>

@@ -1,0 +1,19 @@
+<layout name="learning/course_list" version="1.0.0" extends="_user_base">
+  <meta title="$t:glitter-learning-academy.courses.title" description="$t:glitter-learning-academy.courses.description"/>
+  <data-source id="courses" type="api" endpoint="/api/modules/glitter-learning/learning/courses" method="GET" :auto_fetch="true" :auth_required="false">
+    <params page="{{query.page ?? 1}}" :per_page="12"/>
+    <success><set-state target="local" :coursesFailed="false"/></success>
+    <fail><set-state target="local" :coursesFailed="true"/></fail>
+  </data-source>
+  <init-local><field name="coursesFailed" :value="false"/></init-local>
+  <slot name="content">
+    <section class="glitter-learning-academy-section"><div class="glitter-learning-academy-container">
+      <div class="glitter-learning-academy-section-head"><div><h1>$t:glitter-learning-academy.courses.title</h1><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.courses.description</p></div><a data-if="{{_global.currentUser?.uuid}}" href="/learning/me" class="glitter-learning-academy-button glitter-learning-academy-button--secondary">$t:glitter-learning-academy.nav.my_learning</a></div>
+      <p data-if="{{courses === undefined &amp;&amp; !_local.coursesFailed}}">$t:glitter-learning-academy.common.loading</p>
+      <div data-if="{{_local.coursesFailed}}" class="glitter-learning-academy-empty"><h2>$t:glitter-learning-academy.common.request_failed</h2><p>$t:glitter-learning-academy.common.retry</p></div>
+      <div data-if="{{!_local.coursesFailed &amp;&amp; (courses?.data?.data ?? []).length > 0}}" class="glitter-learning-academy-grid"><article data-each="course in {{courses?.data?.data ?? []}}" class="glitter-learning-academy-card"><h2>{{course.title}}</h2><p>{{course.introduction ?? $t('glitter-learning-academy.common.no_description')}}</p><span class="glitter-learning-academy-badge">$t:glitter-learning-academy.courses.lessons_count|count={{course.lessons_count ?? 0}}</span><a href="/learning/courses/{{course.slug}}" class="glitter-learning-academy-button">$t:glitter-learning-academy.common.detail</a></article></div>
+      <div data-if="{{!_local.coursesFailed &amp;&amp; courses !== undefined &amp;&amp; (courses?.data?.data ?? []).length === 0}}" class="glitter-learning-academy-empty"><h2>$t:glitter-learning-academy.courses.empty</h2></div>
+      <nav data-if="{{!_local.coursesFailed &amp;&amp; (courses?.data?.last_page ?? 1) > 1}}" class="glitter-learning-academy-pagination"><a data-if="{{(courses?.data?.current_page ?? 1) > 1}}" href="/learning?page={{(courses?.data?.current_page ?? 1) - 1}}" class="glitter-learning-academy-button glitter-learning-academy-button--secondary">$t:glitter-learning-academy.common.previous</a><a data-if="{{(courses?.data?.current_page ?? 1) &lt; (courses?.data?.last_page ?? 1)}}" href="/learning?page={{(courses?.data?.current_page ?? 1) + 1}}" class="glitter-learning-academy-button glitter-learning-academy-button--secondary">$t:glitter-learning-academy.common.next</a></nav>
+    </div></section>
+  </slot>
+</layout>

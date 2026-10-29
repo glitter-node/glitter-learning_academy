@@ -1,0 +1,170 @@
+{
+    "version": "1.0.0",
+    "layout_name": "auth/login",
+    "extends": "_user_base",
+    "meta": {
+        "title": "$t:glitter-learning-academy.auth.login",
+        "auth_required": false
+    },
+    "initLocal": {
+        "form": {
+            "email": "",
+            "password": ""
+        },
+        "error": null
+    },
+    "slots": {
+        "content": [
+            {
+                "type": "basic",
+                "name": "Div",
+                "props": {
+                    "className": "glitter-learning-academy-container"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "Form",
+                        "dataKey": "form",
+                        "actions": [
+                            {
+                                "type": "submit",
+                                "handler": "login",
+                                "target": "user",
+                                "params": {
+                                    "body": {
+                                        "email": "{{form.email}}",
+                                        "password": "{{form.password}}"
+                                    }
+                                },
+                                "onSuccess": {
+                                    "handler": "navigate",
+                                    "if": "{{!response.two_factor_required && !response.password_change_required}}",
+                                    "params": {
+                                        "path": "{{query.redirect}}",
+                                        "fallbackPath": "/learning/me"
+                                    }
+                                },
+                                "onError": {
+                                    "handler": "setState",
+                                    "params": {
+                                        "target": "local",
+                                        "error": "{{error.message ?? '$t:glitter-learning-academy.common.request_failed'}}"
+                                    }
+                                }
+                            }
+                        ],
+                        "props": {
+                            "className": "glitter-learning-academy-form"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "H1",
+                                "text": "$t:glitter-learning-academy.auth.login"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "glitter-learning-academy-muted"
+                                },
+                                "text": "$t:glitter-learning-academy.auth.login_description"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "if": "{{_local.error}}",
+                                "text": "{{_local.error}}"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "glitter-learning-academy-field"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Label",
+                                        "props": {
+                                            "htmlFor": "academy-email"
+                                        },
+                                        "text": "$t:glitter-learning-academy.auth.email"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Input",
+                                        "props": {
+                                            "id": "academy-email",
+                                            "type": "email",
+                                            "name": "email",
+                                            "required": "required",
+                                            "autocomplete": "email",
+                                            "className": "glitter-learning-academy-input"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "glitter-learning-academy-field"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Label",
+                                        "props": {
+                                            "htmlFor": "academy-password"
+                                        },
+                                        "text": "$t:glitter-learning-academy.auth.password"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Input",
+                                        "props": {
+                                            "id": "academy-password",
+                                            "type": "password",
+                                            "name": "password",
+                                            "required": "required",
+                                            "autocomplete": "current-password",
+                                            "className": "glitter-learning-academy-input"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "glitter-learning-academy-actions glitter-learning-academy-login-actions"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "A",
+                                        "props": {
+                                            "href": "/forgot-password"
+                                        },
+                                        "text": "$t:glitter-learning-academy.auth.forgot_link"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "type": "submit",
+                                            "className": "glitter-learning-academy-button"
+                                        },
+                                        "text": "$t:glitter-learning-academy.auth.login"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

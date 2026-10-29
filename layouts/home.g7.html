@@ -1,0 +1,37 @@
+<layout name="home" version="1.0.0" extends="_user_base">
+  <meta title="$t:glitter-learning-academy.home.title" description="$t:glitter-learning-academy.home.description"/>
+  <data-source id="courses" type="api" endpoint="/api/modules/glitter-learning/learning/courses" method="GET" :auto_fetch="true" :auth_required="false">
+    <params :per_page="6"/>
+    <success><set-state target="local" :coursesFailed="false"/></success>
+    <fail><set-state target="local" :coursesFailed="true"/></fail>
+  </data-source>
+  <data-source id="recentPosts" type="api" endpoint="/api/modules/sirsoft-board/boards/posts/recent" method="GET" :auto_fetch="true" auth_mode="optional" loading_strategy="progressive">
+    <params :limit="5"/>
+    <success><set-state target="local" :recentPostsFailed="false"/></success>
+    <fail><set-state target="local" :recentPostsFailed="true"/></fail>
+    <fallback><field name="data" :value="[]"/></fallback>
+  </data-source>
+  <init-local><field name="recentPostsFailed" :value="false"/><field name="coursesFailed" :value="false"/></init-local>
+  <slot name="content">
+    <section class="glitter-learning-academy-hero"><div class="glitter-learning-academy-container">
+      <p class="glitter-learning-academy-eyebrow">$t:glitter-learning-academy.home.eyebrow</p><h1 class="glitter-learning-academy-title">$t:glitter-learning-academy.home.title</h1><p class="glitter-learning-academy-lead">$t:glitter-learning-academy.home.description</p>
+      <div class="glitter-learning-academy-actions"><a href="/learning" class="glitter-learning-academy-button">$t:glitter-learning-academy.common.browse</a><a data-if="{{_global.currentUser?.uuid}}" href="/learning/me" class="glitter-learning-academy-button glitter-learning-academy-button--secondary">$t:glitter-learning-academy.nav.my_learning</a></div>
+    </div></section>
+    <section class="glitter-learning-academy-section"><div class="glitter-learning-academy-container">
+      <div class="glitter-learning-academy-section-head"><div><h2>$t:glitter-learning-academy.home.featured</h2><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.home.featured_description</p></div><a href="/learning">$t:glitter-learning-academy.common.browse</a></div>
+      <p data-if="{{courses === undefined &amp;&amp; !_local.coursesFailed}}">$t:glitter-learning-academy.common.loading</p>
+      <div data-if="{{_local.coursesFailed}}" class="glitter-learning-academy-empty"><h3>$t:glitter-learning-academy.common.request_failed</h3><p>$t:glitter-learning-academy.common.retry</p></div>
+      <div data-if="{{!_local.coursesFailed &amp;&amp; (courses?.data?.data ?? []).length > 0}}" class="glitter-learning-academy-grid"><article data-each="course in {{courses?.data?.data ?? []}}" class="glitter-learning-academy-card"><h3>{{course.title}}</h3><p>{{course.introduction ?? $t('glitter-learning-academy.common.no_description')}}</p><span class="glitter-learning-academy-badge">$t:glitter-learning-academy.courses.lessons_count|count={{course.lessons_count ?? 0}}</span><a href="/learning/courses/{{course.slug}}" class="glitter-learning-academy-button">$t:glitter-learning-academy.common.detail</a></article></div>
+      <div data-if="{{!_local.coursesFailed &amp;&amp; courses !== undefined &amp;&amp; (courses?.data?.data ?? []).length === 0}}" class="glitter-learning-academy-empty"><h3>$t:glitter-learning-academy.home.empty</h3></div>
+    </div></section>
+    <section class="glitter-learning-academy-section"><div class="glitter-learning-academy-container">
+      <div class="glitter-learning-academy-section-head"><div><h2>$t:glitter-learning-academy.home.community</h2><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.home.community_description</p></div><a href="/boards">$t:glitter-learning-academy.community.view_all</a></div>
+      <p data-if="{{recentPosts === undefined &amp;&amp; !_local.recentPostsFailed}}">$t:glitter-learning-academy.common.loading</p>
+      <div data-if="{{_local.recentPostsFailed}}" class="glitter-learning-academy-empty"><h3>$t:glitter-learning-academy.community.load_failed</h3><p>$t:glitter-learning-academy.community.load_failed_description</p><a href="/boards" class="glitter-learning-academy-button glitter-learning-academy-button--secondary">$t:glitter-learning-academy.community.view_all</a></div>
+      <ul data-if="{{!_local.recentPostsFailed &amp;&amp; (recentPosts?.data ?? []).length > 0}}" class="glitter-learning-academy-list">
+        <li data-each="post in {{recentPosts?.data ?? []}}" class="glitter-learning-academy-list-item"><div><span class="glitter-learning-academy-badge">{{post.board_name}}</span><h3><a href="/board/{{post.board_slug}}/{{post.id}}">{{post.title}}</a></h3><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.community.post_meta|author={{post.author_name}}|date={{post.created_at}}</p></div><a href="/board/{{post.board_slug}}/{{post.id}}">$t:glitter-learning-academy.community.read</a></li>
+      </ul>
+      <div data-if="{{!_local.recentPostsFailed &amp;&amp; recentPosts !== undefined &amp;&amp; (recentPosts?.data ?? []).length === 0}}" class="glitter-learning-academy-empty"><h3>$t:glitter-learning-academy.community.empty_posts</h3><p>$t:glitter-learning-academy.community.empty_posts_description</p><a href="/boards" class="glitter-learning-academy-button glitter-learning-academy-button--secondary">$t:glitter-learning-academy.community.view_all</a></div>
+    </div></section>
+  </slot>
+</layout>

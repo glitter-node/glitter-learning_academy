@@ -1,0 +1,325 @@
+{
+    "version": "1.0.0",
+    "layout_name": "learning/course_detail",
+    "extends": "_user_base",
+    "meta": {
+        "title": "$t:glitter-learning-academy.courses.overview"
+    },
+    "data_sources": [
+        {
+            "id": "courseData",
+            "type": "api",
+            "endpoint": "/api/modules/glitter-learning/learning/courses/{{route.course}}",
+            "method": "GET",
+            "auto_fetch": true,
+            "auth_mode": "optional"
+        }
+    ],
+    "slots": {
+        "content": [
+            {
+                "type": "basic",
+                "name": "Section",
+                "props": {
+                    "className": "glitter-learning-academy-section"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "glitter-learning-academy-container"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "glitter-learning-academy-section-head"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "P",
+                                                "props": {
+                                                    "className": "glitter-learning-academy-eyebrow"
+                                                },
+                                                "text": "$t:glitter-learning-academy.courses.overview"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "H1",
+                                                "text": "{{courseData?.data?.course?.title}}"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "P",
+                                                "props": {
+                                                    "className": "glitter-learning-academy-muted"
+                                                },
+                                                "text": "{{courseData?.data?.course?.introduction ?? $t('glitter-learning-academy.common.no_description')}}"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "A",
+                                        "props": {
+                                            "href": "/learning",
+                                            "className": "glitter-learning-academy-button glitter-learning-academy-button--secondary"
+                                        },
+                                        "text": "$t:glitter-learning-academy.common.back"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "glitter-learning-academy-split"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Article",
+                                        "props": {
+                                            "className": "glitter-learning-academy-panel"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "H2",
+                                                "text": "$t:glitter-learning-academy.courses.overview"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "glitter-learning-academy-rich-content"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "composite",
+                                                        "name": "HtmlContent",
+                                                        "props": {
+                                                            "content": "{{courseData?.data?.course?.description ?? ''}}",
+                                                            "isHtml": "{{courseData?.data?.course?.description_mode === 'html'}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Section",
+                                        "props": {
+                                            "className": "glitter-learning-academy-panel"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "if": "{{courseData?.data?.enrollment && courseData?.data?.enrollment?.status !== 'cancelled'}}",
+                                                "props": {
+                                                    "className": "glitter-learning-academy-stack"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "glitter-learning-academy-badge glitter-learning-academy-badge--success"
+                                                        },
+                                                        "text": "{{courseData?.data?.enrollment?.status === 'completed' ? $t('glitter-learning-academy.courses.enrollment_completed') : $t('glitter-learning-academy.courses.enrollment_active')}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Strong",
+                                                        "text": "$t:glitter-learning-academy.learning.progress: {{courseData?.data?.progress?.progress_percent ?? 0}}%"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Progress",
+                                                        "props": {
+                                                            "className": "glitter-learning-academy-progress",
+                                                            "value": "{{courseData?.data?.progress?.progress_percent ?? 0}}",
+                                                            "max": "100"
+                                                        },
+                                                        "text": ""
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "A",
+                                                        "if": "{{(courseData?.data?.lessons ?? []).length > 0}}",
+                                                        "props": {
+                                                            "href": "/learning/courses/{{route.course}}/lessons/{{courseData?.data?.lessons?.[0]?.id}}",
+                                                            "className": "glitter-learning-academy-button"
+                                                        },
+                                                        "text": "$t:glitter-learning-academy.courses.continue"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "A",
+                                                "if": "{{!_global.currentUser?.uuid}}",
+                                                "props": {
+                                                    "href": "/login?redirect=/learning/courses/{{route.course}}",
+                                                    "className": "glitter-learning-academy-button"
+                                                },
+                                                "text": "$t:glitter-learning-academy.courses.login_to_enroll"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Button",
+                                                "if": "{{_global.currentUser?.uuid && (!courseData?.data?.enrollment || courseData?.data?.enrollment?.status === 'cancelled')}}",
+                                                "actions": [
+                                                    {
+                                                        "type": "click",
+                                                        "handler": "apiCall",
+                                                        "target": "/api/modules/glitter-learning/learning/courses/{{route.course}}/enroll",
+                                                        "auth_required": true,
+                                                        "params": {
+                                                            "method": "POST"
+                                                        },
+                                                        "onSuccess": [
+                                                            {
+                                                                "handler": "toast",
+                                                                "params": {
+                                                                    "type": "success",
+                                                                    "message": "$t:glitter-learning-academy.courses.enrolled"
+                                                                }
+                                                            },
+                                                            {
+                                                                "handler": "refetchDataSource",
+                                                                "params": {
+                                                                    "dataSourceId": "courseData"
+                                                                }
+                                                            }
+                                                        ],
+                                                        "onError": {
+                                                            "handler": "toast",
+                                                            "params": {
+                                                                "type": "error",
+                                                                "message": "{{error.message ?? '$t:glitter-learning-academy.common.request_failed'}}"
+                                                            }
+                                                        }
+                                                    }
+                                                ],
+                                                "props": {
+                                                    "type": "button",
+                                                    "lockRepeatClick": true,
+                                                    "className": "glitter-learning-academy-button"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "text": "$t:glitter-learning-academy.courses.enroll"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Section",
+                                "props": {
+                                    "className": "glitter-learning-academy-panel"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H2",
+                                        "text": "$t:glitter-learning-academy.courses.curriculum"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "glitter-learning-academy-muted"
+                                        },
+                                        "text": "$t:glitter-learning-academy.courses.curriculum_description"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Ul",
+                                        "if": "{{(courseData?.data?.lessons ?? []).length > 0}}",
+                                        "props": {
+                                            "className": "glitter-learning-academy-list"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Li",
+                                                "iteration": {
+                                                    "source": "{{courseData?.data?.lessons ?? []}}",
+                                                    "item_var": "lesson"
+                                                },
+                                                "props": {
+                                                    "className": "glitter-learning-academy-list-item"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Div",
+                                                        "children": [
+                                                            {
+                                                                "type": "basic",
+                                                                "name": "Strong",
+                                                                "text": "{{lesson.sort_order}}. {{lesson.title}}"
+                                                            },
+                                                            {
+                                                                "type": "basic",
+                                                                "name": "Span",
+                                                                "props": {
+                                                                    "className": "glitter-learning-academy-badge"
+                                                                },
+                                                                "text": "{{lesson.is_required ? $t('glitter-learning-academy.common.required') : $t('glitter-learning-academy.common.optional')}}"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "A",
+                                                        "if": "{{courseData?.data?.enrollment && courseData?.data?.enrollment?.status !== 'cancelled'}}",
+                                                        "props": {
+                                                            "href": "/learning/courses/{{route.course}}/lessons/{{lesson.id}}"
+                                                        },
+                                                        "text": "$t:glitter-learning-academy.courses.continue"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "if": "{{courseData !== undefined && (courseData?.data?.lessons ?? []).length === 0}}",
+                                        "props": {
+                                            "className": "glitter-learning-academy-empty"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "P",
+                                                "text": "$t:glitter-learning-academy.courses.no_lessons"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

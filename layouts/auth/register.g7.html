@@ -1,0 +1,20 @@
+<layout name="auth/register" version="1.0.0" extends="_user_base">
+  <meta title="$t:glitter-learning-academy.auth.register" :auth_required="false"/>
+  <init-local><field name="isRegistering" :value="false"/><field name="registerError" :value="null"/></init-local>
+  <slot name="content"><div class="glitter-learning-academy-container"><form data-key="registerForm" class="glitter-learning-academy-form">
+    <on type="submit"><set-state target="local" :isRegistering="true" :registerError="null"/><api-call target="/api/auth/register" method="POST" body="{{_local.registerForm}}"><success><set-state target="local" :isRegistering="false"/><toast type="success" message="$t:glitter-learning-academy.auth.register_success"/><navigate path="/login"/></success><fail><set-state target="local" :isRegistering="false" registerError="{{error.response?.message ?? error.message ?? '$t:glitter-learning-academy.auth.register_failed'}}"/></fail></api-call></on>
+    <h1>$t:glitter-learning-academy.auth.register</h1><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.auth.register_description</p>
+    <p data-if="{{_local.registerError}}" class="glitter-learning-academy-form-error">{{_local.registerError}}</p>
+    <div class="glitter-learning-academy-field"><label for="academy-register-name"><span>$t:glitter-learning-academy.auth.name</span><span aria-hidden="true">*</span></label><input id="academy-register-name" type="text" name="name" required="required" disabled="{{_local.isRegistering}}" class="glitter-learning-academy-input"/></div>
+    <div class="glitter-learning-academy-field"><label for="academy-register-nickname">$t:glitter-learning-academy.auth.nickname</label><input id="academy-register-nickname" type="text" name="nickname" disabled="{{_local.isRegistering}}" class="glitter-learning-academy-input"/></div>
+    <div class="glitter-learning-academy-field"><label for="academy-register-email"><span>$t:glitter-learning-academy.auth.email</span><span aria-hidden="true">*</span></label><input id="academy-register-email" type="email" name="email" required="required" autocomplete="email" disabled="{{_local.isRegistering}}" class="glitter-learning-academy-input"/></div>
+    <div class="glitter-learning-academy-field"><label for="academy-register-password"><span>$t:glitter-learning-academy.auth.password</span><span aria-hidden="true">*</span></label><input id="academy-register-password" type="password" name="password" required="required" autocomplete="new-password" disabled="{{_local.isRegistering}}" class="glitter-learning-academy-input"/></div>
+    <div class="glitter-learning-academy-field"><label for="academy-register-password-confirmation"><span>$t:glitter-learning-academy.auth.password_confirmation</span><span aria-hidden="true">*</span></label><input id="academy-register-password-confirmation" type="password" name="password_confirmation" required="required" autocomplete="new-password" disabled="{{_local.isRegistering}}" class="glitter-learning-academy-input"/></div>
+    <input type="hidden" name="language" value="{{$templateLocales.includes($locale) ? $locale : $templateLocales[0]}}"/>
+    <div class="glitter-learning-academy-register-consents">
+      <label><input type="checkbox" name="agree_terms" value="1" required="required" disabled="{{_local.isRegistering}}"/><span>$t:glitter-learning-academy.auth.agree_terms</span></label>
+      <label><input type="checkbox" name="agree_privacy" value="1" required="required" disabled="{{_local.isRegistering}}"/><span>$t:glitter-learning-academy.auth.agree_privacy</span></label>
+    </div>
+    <button type="submit" class="glitter-learning-academy-button" disabled="{{_local.isRegistering}}">{{_local.isRegistering ? $t('glitter-learning-academy.auth.register_processing') : $t('glitter-learning-academy.auth.register_submit')}}</button>
+  </form></div></slot>
+</layout>

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "templateId": "glitter-learning_academy",
+  "version": "1.0.0",
+  "components": {
+    "basic": [
+      {"name": "A", "type": "basic", "path": "src/index.js"}, {"name": "Article", "type": "basic", "path": "src/index.js"},
+      {"name": "Button", "type": "basic", "path": "src/index.js"}, {"name": "Div", "type": "basic", "path": "src/index.js"},
+      {"name": "Footer", "type": "basic", "path": "src/index.js"}, {"name": "Form", "type": "basic", "path": "src/index.js"},
+      {"name": "H1", "type": "basic", "path": "src/index.js"}, {"name": "H2", "type": "basic", "path": "src/index.js"},
+      {"name": "H3", "type": "basic", "path": "src/index.js"}, {"name": "Header", "type": "basic", "path": "src/index.js"},
+      {"name": "Input", "type": "basic", "path": "src/index.js"}, {"name": "Label", "type": "basic", "path": "src/index.js"},
+      {"name": "Li", "type": "basic", "path": "src/index.js"}, {"name": "Main", "type": "basic", "path": "src/index.js"},
+      {"name": "Nav", "type": "basic", "path": "src/index.js"}, {"name": "Option", "type": "basic", "path": "src/index.js"},
+      {"name": "P", "type": "basic", "path": "src/index.js"}, {"name": "Progress", "type": "basic", "path": "src/index.js"},
+      {"name": "Section", "type": "basic", "path": "src/index.js"}, {"name": "Select", "type": "basic", "path": "src/index.js"},
+      {"name": "Span", "type": "basic", "path": "src/index.js"}, {"name": "Strong", "type": "basic", "path": "src/index.js"},
+      {"name": "Ul", "type": "basic", "path": "src/index.js"}
+    ],
+    "composite": [{"name": "AccountMenu", "type": "composite", "path": "src/index.js"}, {"name": "HtmlContent", "type": "composite", "path": "src/index.js"}, {"name": "ThemeToggle", "type": "composite", "path": "src/index.js"}, {"name": "Toast", "type": "composite", "path": "src/index.js"}],
+    "layout": []
+  }
+}

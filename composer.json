@@ -1,0 +1,8 @@
+{
+  "name": "glitter/learning-academy",
+  "description": "Glitter Learning Academy template for Gnuboard7",
+  "type": "gnuboard7-template",
+  "version": "1.0.0",
+  "license": "MIT",
+  "require": {"php": "^8.2"}
+}

@@ -1,0 +1,17 @@
+<layout name="pages/show" version="1.0.0" extends="_user_base">
+  <meta title="{{page?.data?.seo_meta?.title ?? page?.data?.title ?? '$t:glitter-learning-academy.pages.title'}}" description="{{page?.data?.seo_meta?.description ?? ''}}"/>
+  <data-source id="page" type="api" endpoint="/api/modules/sirsoft-page/pages/{{route.slug}}" method="GET" :auto_fetch="true" auth_mode="optional" loading_strategy="progressive">
+    <success><set-state target="local" :loadFailed="false"/></success>
+    <fail><set-state target="local" :loadFailed="true"/></fail>
+    <fallback><field name="data" :value="null"/></fallback>
+  </data-source>
+  <init-local><field name="loadFailed" :value="false"/></init-local>
+  <slot name="content">
+    <main class="glitter-learning-academy-section"><div class="glitter-learning-academy-container glitter-learning-academy-reading-width">
+      <a href="/" class="glitter-learning-academy-back-link">$t:glitter-learning-academy.pages.back_home</a>
+      <p data-if="{{page === undefined &amp;&amp; !_local.loadFailed}}">$t:glitter-learning-academy.common.loading</p>
+      <div data-if="{{_local.loadFailed}}" class="glitter-learning-academy-empty"><h1>$t:glitter-learning-academy.pages.not_found</h1><p>$t:glitter-learning-academy.pages.not_found_description</p></div>
+      <article data-if="{{page?.data}}" class="glitter-learning-academy-panel glitter-learning-academy-article"><div data-if="{{page.data.is_preview}}" class="glitter-learning-academy-badge">$t:glitter-learning-academy.pages.preview</div><h1>{{page.data.title}}</h1><p data-if="{{page.data.published_at}}" class="glitter-learning-academy-muted">$t:glitter-learning-academy.pages.published_at|date={{page.data.published_at}}</p><div class="glitter-learning-academy-rich-content"><html-content data-type="composite" content="{{page.data.content ?? ''}}" isHtml="{{(page.data.content_mode ?? 'html') === 'html'}}"/></div><section data-if="{{(page.data.attachments ?? []).length > 0}}" class="glitter-learning-academy-attachments"><h2>$t:glitter-learning-academy.pages.attachments</h2><ul class="glitter-learning-academy-list"><li data-each="attachment in {{page.data.attachments ?? []}}" class="glitter-learning-academy-list-item"><span>{{attachment.original_filename}}</span><a href="{{attachment.download_url}}">$t:glitter-learning-academy.pages.download</a></li></ul></section></article>
+    </div></main>
+  </slot>
+</layout>

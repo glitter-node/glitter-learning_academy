@@ -1,0 +1,17 @@
+<layout name="community/post" version="1.0.0" extends="_user_base">
+  <meta title="{{post?.data?.title ?? '$t:glitter-learning-academy.community.post_title'}}"/>
+  <data-source id="post" type="api" endpoint="/api/modules/sirsoft-board/boards/{{route.slug}}/posts/{{route.id}}" method="GET" :auto_fetch="true" auth_mode="optional" loading_strategy="progressive">
+    <success><set-state target="local" :loadFailed="false"/></success>
+    <fail><set-state target="local" :loadFailed="true"/></fail>
+    <fallback><field name="data" :value="null"/></fallback>
+  </data-source>
+  <init-local><field name="loadFailed" :value="false"/></init-local>
+  <slot name="content">
+    <main class="glitter-learning-academy-section"><div class="glitter-learning-academy-container glitter-learning-academy-reading-width">
+      <a href="/board/{{route.slug}}" class="glitter-learning-academy-back-link">$t:glitter-learning-academy.community.back_to_board</a>
+      <p data-if="{{post === undefined &amp;&amp; !_local.loadFailed}}">$t:glitter-learning-academy.common.loading</p>
+      <div data-if="{{_local.loadFailed}}" class="glitter-learning-academy-empty"><h2>$t:glitter-learning-academy.community.post_unavailable</h2><p>$t:glitter-learning-academy.community.post_unavailable_description</p></div>
+      <article data-if="{{post?.data}}" class="glitter-learning-academy-panel glitter-learning-academy-article"><div class="glitter-learning-academy-status-row"><span data-if="{{post.data.is_notice}}" class="glitter-learning-academy-badge">$t:glitter-learning-academy.community.notice</span><span data-if="{{post.data.category}}" class="glitter-learning-academy-badge">{{post.data.category}}</span></div><h1>{{post.data.title}}</h1><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.community.post_meta|author={{post.data.author?.name}}|date={{post.data.created_at_formatted ?? post.data.created_at}}</p><div data-if="{{post.data.content}}" class="glitter-learning-academy-rich-content"><html-content data-type="composite" content="{{post.data.content}}" isHtml="{{(post.data.content_mode ?? 'text') === 'html'}}"/></div><div data-if="{{!post.data.content}}" class="glitter-learning-academy-empty"><p>$t:glitter-learning-academy.community.protected_content</p></div><div class="glitter-learning-academy-article-stats"><span>$t:glitter-learning-academy.community.views_count|count={{post.data.view_count ?? 0}}</span><span>$t:glitter-learning-academy.community.comments_count|count={{post.data.comment_count ?? 0}}</span></div></article>
+    </div></main>
+  </slot>
+</layout>

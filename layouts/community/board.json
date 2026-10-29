@@ -1,0 +1,376 @@
+{
+    "version": "1.0.0",
+    "layout_name": "community/board",
+    "extends": "_user_base",
+    "meta": {
+        "title": "{{posts?.data?.board?.name ?? '$t:glitter-learning-academy.community.board_title'}}",
+        "description": "{{posts?.data?.board?.description ?? ''}}"
+    },
+    "data_sources": [
+        {
+            "id": "posts",
+            "type": "api",
+            "endpoint": "/api/modules/sirsoft-board/boards/{{route.slug}}/posts",
+            "method": "GET",
+            "auto_fetch": true,
+            "auth_mode": "optional",
+            "loading_strategy": "progressive",
+            "params": {
+                "page": "{{query.page ?? 1}}",
+                "search": "{{query.search ?? ''}}",
+                "search_field": "title_content"
+            },
+            "onSuccess": [
+                {
+                    "handler": "setState",
+                    "params": {
+                        "target": "local",
+                        "loadFailed": false
+                    }
+                }
+            ],
+            "onError": [
+                {
+                    "handler": "setState",
+                    "params": {
+                        "target": "local",
+                        "loadFailed": true
+                    }
+                }
+            ],
+            "fallback": {
+                "data": {
+                    "data": [],
+                    "board": null,
+                    "abilities": [],
+                    "pagination": []
+                }
+            }
+        }
+    ],
+    "initLocal": {
+        "loadFailed": false,
+        "search": ""
+    },
+    "init_actions": [
+        {
+            "handler": "setState",
+            "params": {
+                "target": "local",
+                "search": "{{query.search || ''}}"
+            }
+        }
+    ],
+    "slots": {
+        "content": [
+            {
+                "type": "basic",
+                "name": "Main",
+                "props": {
+                    "className": "glitter-learning-academy-section"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "glitter-learning-academy-container"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "A",
+                                "props": {
+                                    "href": "/boards",
+                                    "className": "glitter-learning-academy-back-link"
+                                },
+                                "text": "$t:glitter-learning-academy.community.back_to_boards"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "if": "{{posts?.data?.board}}",
+                                "props": {
+                                    "className": "glitter-learning-academy-page-head"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H1",
+                                        "text": "{{posts.data.board.name}}"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "glitter-learning-academy-muted"
+                                        },
+                                        "text": "{{posts.data.board.description ?? $t('glitter-learning-academy.community.no_description')}}"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "glitter-learning-academy-status-row"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Span",
+                                                "if": "{{posts?.data?.abilities?.can_write}}",
+                                                "props": {
+                                                    "className": "glitter-learning-academy-badge glitter-learning-academy-badge--success"
+                                                },
+                                                "text": "$t:glitter-learning-academy.community.can_write"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Span",
+                                                "if": "{{!posts?.data?.abilities?.can_write}}",
+                                                "props": {
+                                                    "className": "glitter-learning-academy-badge"
+                                                },
+                                                "text": "$t:glitter-learning-academy.community.read_only"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Form",
+                                "if": "{{posts?.data?.board}}",
+                                "actions": [
+                                    {
+                                        "type": "submit",
+                                        "handler": "navigate",
+                                        "params": {
+                                            "path": "/board/{{route.slug}}",
+                                            "mergeQuery": true,
+                                            "query": {
+                                                "page": 1,
+                                                "search": "{{_local.search || undefined}}"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "props": {
+                                    "className": "glitter-learning-academy-search-bar"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Label",
+                                        "props": {
+                                            "htmlFor": "academy-board-search",
+                                            "className": "glitter-learning-academy-sr-only"
+                                        },
+                                        "text": "$t:glitter-learning-academy.community.search_label"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Input",
+                                        "actions": [
+                                            {
+                                                "type": "input",
+                                                "handler": "setState",
+                                                "params": {
+                                                    "target": "local",
+                                                    "search": "{{$event.target.value}}"
+                                                }
+                                            }
+                                        ],
+                                        "props": {
+                                            "id": "academy-board-search",
+                                            "className": "glitter-learning-academy-input",
+                                            "value": "{{_local.search}}",
+                                            "placeholder": "$t:glitter-learning-academy.community.search_placeholder"
+                                        }
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "type": "submit",
+                                            "className": "glitter-learning-academy-button"
+                                        },
+                                        "text": "$t:glitter-learning-academy.community.search"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "if": "{{posts === undefined && !_local.loadFailed}}",
+                                "text": "$t:glitter-learning-academy.common.loading"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "if": "{{_local.loadFailed}}",
+                                "props": {
+                                    "className": "glitter-learning-academy-empty"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H2",
+                                        "text": "$t:glitter-learning-academy.community.board_unavailable"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "text": "$t:glitter-learning-academy.community.board_unavailable_description"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Ul",
+                                "if": "{{!_local.loadFailed && (posts?.data?.data ?? []).length > 0}}",
+                                "props": {
+                                    "className": "glitter-learning-academy-list"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Li",
+                                        "iteration": {
+                                            "source": "{{posts?.data?.data ?? []}}",
+                                            "item_var": "post"
+                                        },
+                                        "props": {
+                                            "className": "glitter-learning-academy-list-item"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "glitter-learning-academy-list-main"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Div",
+                                                        "props": {
+                                                            "className": "glitter-learning-academy-status-row"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "type": "basic",
+                                                                "name": "Span",
+                                                                "if": "{{post.is_notice}}",
+                                                                "props": {
+                                                                    "className": "glitter-learning-academy-badge"
+                                                                },
+                                                                "text": "$t:glitter-learning-academy.community.notice"
+                                                            },
+                                                            {
+                                                                "type": "basic",
+                                                                "name": "Span",
+                                                                "if": "{{post.category}}",
+                                                                "props": {
+                                                                    "className": "glitter-learning-academy-badge"
+                                                                },
+                                                                "text": "{{post.category}}"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "H2",
+                                                        "children": [
+                                                            {
+                                                                "type": "basic",
+                                                                "name": "A",
+                                                                "props": {
+                                                                    "href": "/board/{{route.slug}}/{{post.id}}"
+                                                                },
+                                                                "text": "{{post.title}}"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "glitter-learning-academy-muted"
+                                                        },
+                                                        "text": "$t:glitter-learning-academy.community.post_meta|author={{post.author?.name}}|date={{post.created_at_formatted ?? post.created_at}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "if": "{{post.content_preview}}",
+                                                        "text": "{{post.content_preview}}"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Span",
+                                                "text": "$t:glitter-learning-academy.community.comments_count|count={{post.comment_count ?? 0}}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "if": "{{!_local.loadFailed && posts !== undefined && (posts?.data?.data ?? []).length === 0}}",
+                                "props": {
+                                    "className": "glitter-learning-academy-empty"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H2",
+                                        "text": "$t:glitter-learning-academy.community.empty_posts"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "text": "$t:glitter-learning-academy.community.empty_posts_description"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Nav",
+                                "if": "{{posts?.data?.pagination}}",
+                                "props": {
+                                    "className": "glitter-learning-academy-pagination",
+                                    "aria-label": "$t:glitter-learning-academy.community.pagination"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "A",
+                                        "if": "{{(posts.data.pagination.current_page ?? 1) > 1}}",
+                                        "props": {
+                                            "className": "glitter-learning-academy-button glitter-learning-academy-button--secondary",
+                                            "href": "/board/{{route.slug}}?page={{(posts.data.pagination.current_page ?? 1) - 1}}&search={{query.search ?? ''}}"
+                                        },
+                                        "text": "$t:glitter-learning-academy.common.previous"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "A",
+                                        "if": "{{posts.data.pagination.has_more_pages}}",
+                                        "props": {
+                                            "className": "glitter-learning-academy-button glitter-learning-academy-button--secondary",
+                                            "href": "/board/{{route.slug}}?page={{(posts.data.pagination.current_page ?? 1) + 1}}&search={{query.search ?? ''}}"
+                                        },
+                                        "text": "$t:glitter-learning-academy.common.next"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

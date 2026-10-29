@@ -1,0 +1,21 @@
+<layout name="community/boards" version="1.0.0" extends="_user_base">
+  <meta title="$t:glitter-learning-academy.community.title" description="$t:glitter-learning-academy.community.description"/>
+  <data-source id="boards" type="api" endpoint="/api/modules/sirsoft-board/boards" method="GET" :auto_fetch="true" auth_mode="optional" loading_strategy="progressive">
+    <params :limit="3"/>
+    <success><set-state target="local" :loadFailed="false"/></success>
+    <fail><set-state target="local" :loadFailed="true"/></fail>
+    <fallback><field name="data" :value="[]"/></fallback>
+  </data-source>
+  <init-local><field name="loadFailed" :value="false"/></init-local>
+  <slot name="content">
+    <main class="glitter-learning-academy-section"><div class="glitter-learning-academy-container">
+      <div class="glitter-learning-academy-page-head"><p class="glitter-learning-academy-eyebrow">$t:glitter-learning-academy.community.eyebrow</p><h1>$t:glitter-learning-academy.community.title</h1><p class="glitter-learning-academy-muted">$t:glitter-learning-academy.community.description</p></div>
+      <p data-if="{{boards === undefined &amp;&amp; !_local.loadFailed}}">$t:glitter-learning-academy.common.loading</p>
+      <div data-if="{{_local.loadFailed}}" class="glitter-learning-academy-empty"><h2>$t:glitter-learning-academy.community.load_failed</h2><p>$t:glitter-learning-academy.community.load_failed_description</p></div>
+      <div data-if="{{!_local.loadFailed &amp;&amp; (boards?.data ?? []).length > 0}}" class="glitter-learning-academy-grid">
+        <article data-each="board in {{boards?.data ?? []}}" class="glitter-learning-academy-card"><span class="glitter-learning-academy-badge">$t:glitter-learning-academy.community.posts_count|count={{board.posts_count ?? 0}}</span><h2><a href="/board/{{board.slug}}">{{board.name}}</a></h2><p>{{board.description ?? $t('glitter-learning-academy.community.no_description')}}</p><a href="/board/{{board.slug}}" class="glitter-learning-academy-button glitter-learning-academy-button--secondary">$t:glitter-learning-academy.community.open_board</a></article>
+      </div>
+      <div data-if="{{!_local.loadFailed &amp;&amp; boards !== undefined &amp;&amp; (boards?.data ?? []).length === 0}}" class="glitter-learning-academy-empty"><h2>$t:glitter-learning-academy.community.empty_boards</h2><p>$t:glitter-learning-academy.community.empty_boards_description</p></div>
+    </div></main>
+  </slot>
+</layout>
